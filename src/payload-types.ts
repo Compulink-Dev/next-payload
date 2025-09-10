@@ -69,6 +69,12 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    categories: Category;
+    news: News;
+    'exchange-rates': ExchangeRate;
+    'monetary-policy-statements': MonetaryPolicyStatement;
+    'quick-links': QuickLink;
+    'economic-indicators': EconomicIndicator;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +83,12 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
+    'exchange-rates': ExchangeRatesSelect<false> | ExchangeRatesSelect<true>;
+    'monetary-policy-statements': MonetaryPolicyStatementsSelect<false> | MonetaryPolicyStatementsSelect<true>;
+    'quick-links': QuickLinksSelect<false> | QuickLinksSelect<true>;
+    'economic-indicators': EconomicIndicatorsSelect<false> | EconomicIndicatorsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -158,6 +170,92 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: string;
+  name: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: string;
+  title: string;
+  date: string;
+  category: 'publication' | 'notice' | 'report' | 'survey' | 'announcement';
+  link: string;
+  description?: string | null;
+  file?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exchange-rates".
+ */
+export interface ExchangeRate {
+  id: string;
+  currency: 'usd' | 'gbp' | 'eur' | 'zar' | 'cny' | 'bwp';
+  rate: number;
+  lastUpdated: string;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "monetary-policy-statements".
+ */
+export interface MonetaryPolicyStatement {
+  id: string;
+  title: string;
+  date: string;
+  category: 'policy' | 'mpc';
+  excerpt?: string | null;
+  fullStatement: string | Media;
+  atAGlance?: (string | null) | Media;
+  isActive: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quick-links".
+ */
+export interface QuickLink {
+  id: string;
+  title: string;
+  description: string;
+  link: string;
+  icon: 'bar-chart' | 'file-text' | 'banknote' | 'chart-combined' | 'dollar-sign' | 'landmark';
+  color: 'blue' | 'green' | 'amber' | 'purple' | 'red' | 'indigo';
+  isActive?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "economic-indicators".
+ */
+export interface EconomicIndicator {
+  id: string;
+  indicator: 'inflation-yoy' | 'inflation-mom' | 'policy-rate' | 'gold-price' | 'interbank-rate' | 'gdp-growth';
+  value: string;
+  period: string;
+  lastUpdated: string;
+  trend?: ('up' | 'down' | 'stable') | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -170,6 +268,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'news';
+        value: string | News;
+      } | null)
+    | ({
+        relationTo: 'exchange-rates';
+        value: string | ExchangeRate;
+      } | null)
+    | ({
+        relationTo: 'monetary-policy-statements';
+        value: string | MonetaryPolicyStatement;
+      } | null)
+    | ({
+        relationTo: 'quick-links';
+        value: string | QuickLink;
+      } | null)
+    | ({
+        relationTo: 'economic-indicators';
+        value: string | EconomicIndicator;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -252,6 +374,86 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+  title?: T;
+  date?: T;
+  category?: T;
+  link?: T;
+  description?: T;
+  file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exchange-rates_select".
+ */
+export interface ExchangeRatesSelect<T extends boolean = true> {
+  currency?: T;
+  rate?: T;
+  lastUpdated?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "monetary-policy-statements_select".
+ */
+export interface MonetaryPolicyStatementsSelect<T extends boolean = true> {
+  title?: T;
+  date?: T;
+  category?: T;
+  excerpt?: T;
+  fullStatement?: T;
+  atAGlance?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quick-links_select".
+ */
+export interface QuickLinksSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  link?: T;
+  icon?: T;
+  color?: T;
+  isActive?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "economic-indicators_select".
+ */
+export interface EconomicIndicatorsSelect<T extends boolean = true> {
+  indicator?: T;
+  value?: T;
+  period?: T;
+  lastUpdated?: T;
+  trend?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

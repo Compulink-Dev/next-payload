@@ -821,9 +821,9 @@ export default function MonetaryPolicyPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  The Reserve Bank of Zimbabwe formulates and implements monetary policy to maintain
+                  {`The Reserve Bank of Zimbabwe formulates and implements monetary policy to maintain
                   price stability and support sustainable economic growth. Our policies are designed
-                  to ensure low and stable inflation while maintaining a stable financial system.
+                  to ensure low and stable inflation while maintaining a stable financial system.`}
                 </p>
               </CardContent>
             </Card>
@@ -837,9 +837,9 @@ export default function MonetaryPolicyPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  The Monetary Policy Committee (MPC) is responsible for setting monetary policy.
+                  {`The Monetary Policy Committee (MPC) is responsible for setting monetary policy.
                   The committee meets regularly to assess economic conditions and make decisions
-                  aimed at achieving the Bank's inflation targets and maintaining financial
+                  aimed at achieving the Bank's inflation targets and maintaining financial`}
                   stability.
                 </p>
               </CardContent>

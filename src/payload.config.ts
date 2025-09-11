@@ -15,6 +15,7 @@ import { ExchangeRates } from './collections/ExchangeRates'
 import { MonetaryPolicyStatements } from './collections/MonetayPolicyStatements'
 import { QuickLinks } from './collections/QuickLinks'
 import { EconomicIndicators } from './collections/EconomicIndicators'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -47,6 +48,12 @@ export default buildConfig({
   sharp,
   plugins: [
     payloadCloudPlugin(),
+    vercelBlobStorage({
+      collections: {
+        media: true,
+      },
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
     // storage-adapter-placeholder
   ],
 })

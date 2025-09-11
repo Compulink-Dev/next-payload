@@ -1,11 +1,12 @@
+// storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -28,25 +29,7 @@ export default buildConfig({
   },
   collections: [
     Users,
-    // Use different media config based on environment
-    process.env.VERCEL
-      ? {
-          slug: 'media',
-          access: {
-            read: () => true,
-          },
-          upload: {
-            handlers: [], // Empty handlers for Vercel
-          },
-          fields: [
-            {
-              name: 'alt',
-              type: 'text',
-              required: true,
-            },
-          ],
-        }
-      : Media,
+    Media,
     Categories,
     News,
     ExchangeRates,
@@ -65,15 +48,12 @@ export default buildConfig({
   sharp,
   plugins: [
     payloadCloudPlugin(),
-    ...(process.env.VERCEL
-      ? [
-          vercelBlobStorage({
-            collections: {
-              media: true,
-            },
-            token: process.env.BLOB_READ_WRITE_TOKEN || '',
-          }),
-        ]
-      : []),
+    vercelBlobStorage({
+      collections: {
+        media: true,
+      },
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
+    // storage-adapter-placeholder
   ],
 })

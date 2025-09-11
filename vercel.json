@@ -11,6 +11,6 @@
       "NODE_OPTIONS": "--no-deprecation --max-old-space-size=8000"
     }
   },
-  "installCommand": "pnpm install",
-  "buildCommand": "pnpm run generate:importmap && pnpm run build"
+  "installCommand": "npm install",
+  "buildCommand": "npm run generate:importmap && npm run build"
 }

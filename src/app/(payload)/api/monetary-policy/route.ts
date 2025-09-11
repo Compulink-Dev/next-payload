@@ -26,13 +26,17 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await payload.find({
-      collection: 'monetary-policy-statements', // 👈 must match your config slug
+      collection: 'monetary-policy-statements', // 👈 Fixed: matches your collection slug
       where: query,
       sort: '-date',
       limit: 50,
+      depth: 2, // 👈 Add this to populate file references
     })
 
     console.log('Monetary data fetched:', data.docs.length, 'documents')
+    if (data.docs.length > 0) {
+      console.log('Sample document structure:', JSON.stringify(data.docs[0], null, 2))
+    }
 
     return NextResponse.json(data)
   } catch (error) {

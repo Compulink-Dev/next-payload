@@ -12,7 +12,7 @@ import { Media } from './collections/Media'
 import { Categories } from './collections/Categories'
 import { News } from './collections/News'
 import { ExchangeRates } from './collections/ExchangeRates'
-import { MonetaryPolicyStatements } from './collections/MonetayPolicy'
+import { MonetaryPolicyStatements } from './collections/MonetayPolicyStatements'
 import { QuickLinks } from './collections/QuickLinks'
 import { EconomicIndicators } from './collections/EconomicIndicators'
 

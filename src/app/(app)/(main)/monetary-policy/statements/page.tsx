@@ -6,12 +6,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { FileText, Download, ArrowLeft, Calendar, Search, BarChart3, Users } from 'lucide-react'
+import {
+  FileText,
+  Download,
+  ArrowLeft,
+  Calendar,
+  Search,
+  BarChart3,
+  Users,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 // Types for our data
-// In your frontend types
 interface MonetaryPolicyStatement {
   id: string
   title: string
@@ -44,6 +53,7 @@ const getFileUrl = (file: string | { url: string }): string => {
   }
   return file.url
 }
+
 interface MonetaryPolicyData {
   docs: MonetaryPolicyStatement[]
   totalDocs: number
@@ -83,7 +93,7 @@ function MonetaryPolicyStatements() {
         setError(err instanceof Error ? err.message : 'An error occurred')
         console.error('Error fetching statements:', err)
 
-        // Fallback to sample data if API fails - updated to match new type structure
+        // Fallback to sample data if API fails
         setStatements([
           {
             id: '1',
@@ -127,6 +137,69 @@ function MonetaryPolicyStatements() {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           },
+          {
+            id: '3',
+            title: '2024 Year-end Monetary Policy Statement',
+            date: '2024-12-15T00:00:00.000Z',
+            excerpt:
+              'Review of monetary policy measures implemented throughout the year and outlook for the coming year.',
+            fullStatement: {
+              id: '5',
+              url: '/documents/mps/2024/MPS_December_2024.pdf',
+              filename: 'MPS_December_2024.pdf',
+            },
+            atAGlance: {
+              id: '6',
+              url: '/documents/mps/2024/MPS_At_A_Glance_December_2024.pdf',
+              filename: 'MPS_At_A_Glance_December_2024.pdf',
+            },
+            category: 'policy',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '4',
+            title: '2024 Mid-year Monetary Policy Review',
+            date: '2024-07-20T00:00:00.000Z',
+            excerpt:
+              'Assessment of economic performance in the first half of the year and adjustments to monetary policy.',
+            fullStatement: {
+              id: '7',
+              url: '/documents/mps/2024/MPS_July_2024.pdf',
+              filename: 'MPS_July_2024.pdf',
+            },
+            atAGlance: {
+              id: '8',
+              url: '/documents/mps/2024/MPS_At_A_Glance_July_2024.pdf',
+              filename: 'MPS_At_A_Glance_July_2024.pdf',
+            },
+            category: 'policy',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '5',
+            title: '2024 First Quarter Monetary Policy Statement',
+            date: '2024-03-30T00:00:00.000Z',
+            excerpt:
+              'Monetary policy measures to address inflation and support economic growth in the first quarter.',
+            fullStatement: {
+              id: '9',
+              url: '/documents/mps/2024/MPS_March_2024.pdf',
+              filename: 'MPS_March_2024.pdf',
+            },
+            atAGlance: {
+              id: '10',
+              url: '/documents/mps/2024/MPS_At_A_Glance_March_2024.pdf',
+              filename: 'MPS_At_A_Glance_March_2024.pdf',
+            },
+            category: 'policy',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
         ])
       } finally {
         setIsLoading(false)
@@ -147,6 +220,49 @@ function MonetaryPolicyStatements() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   )
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = []
+    const maxVisiblePages = 5
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i)
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i)
+        }
+        pageNumbers.push('...')
+        pageNumbers.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1)
+        pageNumbers.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i)
+        }
+      } else {
+        pageNumbers.push(1)
+        pageNumbers.push('...')
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i)
+        }
+        pageNumbers.push('...')
+        pageNumbers.push(totalPages)
+      }
+    }
+
+    return pageNumbers
+  }
 
   if (isLoading) {
     return (
@@ -241,7 +357,6 @@ function MonetaryPolicyStatements() {
                     <p className="text-muted-foreground mb-4">{statement.excerpt}</p>
                   </div>
                   <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:items-end">
-                    // In your component where you use the links:
                     <Button variant="outline" size="sm" asChild>
                       <Link
                         href={getFileUrl(statement.fullStatement)}
@@ -272,28 +387,56 @@ function MonetaryPolicyStatements() {
         ))}
       </div>
 
-      {/* Pagination */}
+      {/* Enhanced Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-8">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </Button>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+          <div className="text-sm text-muted-foreground">
+            Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
+            {Math.min(currentPage * itemsPerPage, filteredStatements.length)} of{' '}
+            {filteredStatements.length} statements
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+
+            <div className="flex items-center gap-1">
+              {getPageNumbers().map((pageNumber, index) =>
+                pageNumber === '...' ? (
+                  <span key={`ellipsis-${index}`} className="px-2 py-1">
+                    ...
+                  </span>
+                ) : (
+                  <Button
+                    key={pageNumber}
+                    variant={currentPage === pageNumber ? 'default' : 'outline'}
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    onClick={() => handlePageChange(pageNumber as number)}
+                  >
+                    {pageNumber}
+                  </Button>
+                ),
+              )}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )}
 
@@ -312,6 +455,8 @@ function MPCStatements() {
   const [mpcStatements, setMpcStatements] = useState<MonetaryPolicyStatement[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 4
 
   useEffect(() => {
     const fetchMpcStatements = async () => {
@@ -329,13 +474,14 @@ function MPCStatements() {
         setError(err instanceof Error ? err.message : 'An error occurred')
         console.error('Error fetching MPC statements:', err)
 
-        // Fallback to sample data if API fails - updated to match new type structure
+        // Fallback to sample data if API fails
         setMpcStatements([
           {
             id: '1',
             title: 'MPC Post Meeting Statement - 26 April 2024',
             date: '2024-04-26T00:00:00.000Z',
-            excerpt: '',
+            excerpt:
+              'Summary of the Monetary Policy Committee meeting decisions and economic outlook.',
             fullStatement: {
               id: '5',
               url: '/documents/mps/2024/MPC_-_Monetary_Policy_Committee_Press_Statement_26_April_2024.pdf',
@@ -350,12 +496,58 @@ function MPCStatements() {
             id: '2',
             title: 'MPC Post Meeting Statement - 4 December 2023',
             date: '2023-12-04T00:00:00.000Z',
-            excerpt: '',
+            excerpt:
+              'Monetary Policy Committee resolutions and policy direction for the coming period.',
             fullStatement: {
               id: '6',
               url: '/documents/mps/2023/Resolutions_of_the_Monetary_Policy_Committee_Meeting_Held_on_1_December_2023_2.pdf',
               filename:
                 'Resolutions_of_the_Monetary_Policy_Committee_Meeting_Held_on_1_December_2023_2.pdf',
+            },
+            category: 'mpc',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '3',
+            title: 'MPC Post Meeting Statement - 27 September 2023',
+            date: '2023-09-27T00:00:00.000Z',
+            excerpt: 'Committee decisions on monetary policy stance and economic assessment.',
+            fullStatement: {
+              id: '7',
+              url: '/documents/mps/2023/MPC_September_2023.pdf',
+              filename: 'MPC_September_2023.pdf',
+            },
+            category: 'mpc',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '4',
+            title: 'MPC Post Meeting Statement - 28 June 2023',
+            date: '2023-06-28T00:00:00.000Z',
+            excerpt: 'Mid-year review of monetary policy and committee resolutions.',
+            fullStatement: {
+              id: '8',
+              url: '/documents/mps/2023/MPC_June_2023.pdf',
+              filename: 'MPC_June_2023.pdf',
+            },
+            category: 'mpc',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '5',
+            title: 'MPC Post Meeting Statement - 29 March 2023',
+            date: '2023-03-29T00:00:00.000Z',
+            excerpt: 'First quarter monetary policy committee meeting decisions and outlook.',
+            fullStatement: {
+              id: '9',
+              url: '/documents/mps/2023/MPC_March_2023.pdf',
+              filename: 'MPC_March_2023.pdf',
             },
             category: 'mpc',
             isActive: true,
@@ -370,6 +562,55 @@ function MPCStatements() {
 
     fetchMpcStatements()
   }, [])
+
+  const totalPages = Math.ceil(mpcStatements.length / itemsPerPage)
+  const currentItems = mpcStatements.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  )
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = []
+    const maxVisiblePages = 5
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i)
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i)
+        }
+        pageNumbers.push('...')
+        pageNumbers.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1)
+        pageNumbers.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i)
+        }
+      } else {
+        pageNumbers.push(1)
+        pageNumbers.push('...')
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i)
+        }
+        pageNumbers.push('...')
+        pageNumbers.push(totalPages)
+      }
+    }
+
+    return pageNumbers
+  }
 
   if (isLoading) {
     return (
@@ -410,44 +651,96 @@ function MPCStatements() {
     >
       <h2 className="text-2xl font-semibold">Monetary Policy Committee Statements</h2>
 
-      <Card>
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            {mpcStatements.map((statement, index) => (
-              <motion.div
-                key={statement.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow"
-              >
-                <div className="flex-1">
-                  <h3 className="font-medium">{statement.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {new Date(statement.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link
-                      href={getFileUrl(statement.fullStatement)}
-                      target="_blank"
-                      className="flex items-center gap-2"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                    </Link>
-                  </Button>
-                </div>
-              </motion.div>
-            ))}
+      <div className="space-y-4">
+        {currentItems.map((statement, index) => (
+          <motion.div
+            key={statement.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+            className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow"
+          >
+            <div className="flex-1">
+              <h3 className="font-medium">{statement.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {new Date(statement.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+              {statement.excerpt && (
+                <p className="text-muted-foreground mt-2 text-sm">{statement.excerpt}</p>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <Button variant="outline" size="sm" asChild>
+                <Link
+                  href={getFileUrl(statement.fullStatement)}
+                  target="_blank"
+                  className="flex items-center gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Download
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Pagination for MPC Statements */}
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+          <div className="text-sm text-muted-foreground">
+            Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
+            {Math.min(currentPage * itemsPerPage, mpcStatements.length)} of {mpcStatements.length}{' '}
+            statements
           </div>
-        </CardContent>
-      </Card>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+
+            <div className="flex items-center gap-1">
+              {getPageNumbers().map((pageNumber, index) =>
+                pageNumber === '...' ? (
+                  <span key={`ellipsis-${index}`} className="px-2 py-1">
+                    ...
+                  </span>
+                ) : (
+                  <Button
+                    key={pageNumber}
+                    variant={currentPage === pageNumber ? 'default' : 'outline'}
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    onClick={() => handlePageChange(pageNumber as number)}
+                  >
+                    {pageNumber}
+                  </Button>
+                ),
+              )}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="text-center">
         <Button variant="outline" asChild>
@@ -544,10 +837,10 @@ export default function MonetaryPolicyPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  {`The Monetary Policy Committee (MPC) is responsible for setting
-                  monetary policy. The committee meets regularly to assess
-                  economic conditions and make decisions aimed at achieving the
-                  Bank's inflation targets and maintaining financial stability.`}
+                  The Monetary Policy Committee (MPC) is responsible for setting monetary policy.
+                  The committee meets regularly to assess economic conditions and make decisions
+                  aimed at achieving the Bank's inflation targets and maintaining financial
+                  stability.
                 </p>
               </CardContent>
             </Card>

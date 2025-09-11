@@ -1,17 +1,10 @@
 // app/(frontend)/contact/page.tsx
-"use client";
+'use client'
 
-import {
-  Phone,
-  Mail,
-  Printer,
-  Facebook,
-  Twitter,
-  ArrowLeft,
-} from "lucide-react";
-import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Phone, Mail, Printer, Facebook, Twitter, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 export default function ContactPage() {
   return (
@@ -20,12 +13,7 @@ export default function ContactPage() {
       <header className="bg-blue-900 text-white py-6">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4 mb-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="text-white hover:bg-white/10"
-            >
+            <Button variant="ghost" size="sm" asChild className="text-white hover:bg-white/10">
               <Link href="/" className="flex items-center gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Back to Home
@@ -34,7 +22,7 @@ export default function ContactPage() {
           </div>
           <h1 className="text-lg md:text-3xl font-bold">Contact Us</h1>
           <p className="text-blue-200 text-xs md:text-sm">
-            Reach out to the Reserve Bank of Zimbabwe
+            Reach out to the Reserve Bank of Zimbabwe(RBZ)
           </p>
         </div>
       </header>
@@ -144,5 +132,5 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
-  );
+  )
 }
